@@ -308,6 +308,10 @@ app.get('/events/create', auth, canEdit, (req, res) => {
 
 app.post('/events/create', auth, canEdit, async (req, res) => {
   const { title, event_date, event_type, event_place, organizer, target_audience, description, result } = req.body;
+  const today = new Date().toISOString().slice(0, 10);
+  if (!event_date || event_date < today) {
+  return res.status(400).send('Нельзя создать мероприятие на прошедшую дату');
+  }
   const created = await query('INSERT INTO events(title, event_date, event_type, event_place, organizer, target_audience, description, result, created_by) VALUES(?,?,?,?,?,?,?,?,?)', [title, event_date, event_type, event_place, organizer, target_audience, description, result, req.session.user.id]);
   await logAction(req, 'Создание мероприятия', 'events', created.insertId);
   res.redirect('/events/' + created.insertId);
@@ -346,6 +350,24 @@ app.post('/subjects', auth, canEdit, async (req, res) => {
   res.redirect('/subjects');
 });
 
+app.post('/subjects/:id/edit', auth, adminOnly, async (req, res) => {
+  const { group_id, name, teacher_name } = req.body;
+
+  await query(
+    'UPDATE subjects SET group_id=?, name=?, teacher_name=? WHERE id=?',
+    [group_id, name, teacher_name, req.params.id]
+  );
+
+  await logAction(req, 'Изменение дисциплины', 'subjects', req.params.id);
+  res.redirect('/subjects');
+});
+
+app.post('/subjects/:id/delete', auth, adminOnly, async (req, res) => {
+  await query('DELETE FROM subjects WHERE id=?', [req.params.id]);
+
+  await logAction(req, 'Удаление дисциплины', 'subjects', req.params.id);
+  res.redirect('/subjects');
+});
 
 function formatDate(value) {
   if (!value) return '';
