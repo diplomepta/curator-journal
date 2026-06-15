@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1">Успеваемость</h1><div class="page-subtitle">Добавление оценок, типа контроля и обязательного комментария.</div></div></div>
+<% if (user.role !== 'viewer') { %>
+<div class="card mb-4"><div class="card-body"><form method="post" class="row g-3">
+  <div class="col-md-3"><label class="form-label">Студент *</label><select class="form-select" name="student_id" required><option value="">Выберите</option><% students.forEach(s => { %><option value="<%= s.id %>"><%= s.full_name %></option><% }) %></select></div>
+  <div class="col-md-3"><label class="form-label">Дисциплина *</label><select class="form-select" name="subject_id" required><option value="">Выберите</option><% subjects.forEach(s => { %><option value="<%= s.id %>"><%= s.name %></option><% }) %></select></div>
+  <div class="col-md-1"><label class="form-label">Оценка *</label><input class="form-control" name="grade_value" required placeholder="5"></div>
+  <div class="col-md-2"><label class="form-label">Дата *</label><input class="form-control" type="date" name="grade_date" required></div>
+  <div class="col-md-3"><label class="form-label">Тип контроля *</label><input class="form-control" name="control_type" required placeholder="Практическая работа"></div>
+  <div class="col-md-10"><label class="form-label">Комментарий *</label><input class="form-control" name="comment" required minlength="3" placeholder="Тема работы или причина задолженности"></div>
+  <div class="col-md-2 d-flex align-items-end"><button class="btn btn-primary w-100">Добавить</button></div>
+</form></div></div>
+<% } %>
+<div class="card"><div class="card-body p-0"><table class="table table-hover mb-0"><thead><tr><th>Студент</th><th>Дисциплина</th><th>Оценка</th><th>Дата</th><th>Тип</th><th></th></tr></thead><tbody>
+<% grades.forEach(g => { %><tr><td><%= g.full_name %></td><td><%= g.subject_name %></td><td><b><%= g.grade_value %></b><div class="small text-muted"><%= g.comment || '' %></div></td><td><%= g.grade_date.toISOString().slice(0,10) %></td><td><%= g.control_type %></td><td class="text-end"><% if (user.role !== 'viewer') { %><form method="post" action="/grades/<%= g.id %>/delete"><button class="btn btn-sm btn-outline-danger">Удалить</button></form><% } %></td></tr><% }) %>
+<% if (!grades.length) { %><tr><td colspan="6" class="empty-state">Оценки ещё не добавлены</td></tr><% } %>
+</tbody></table></div></div>
+<%- include('../partials/footer') %>

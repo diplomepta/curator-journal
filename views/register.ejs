@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+<div class="login-page">
+  <div class="login-box">
+    <div class="card login-panel">
+      <div class="login-visual">
+        <div class="brand-mark mb-4">Ж</div>
+        <h1>Регистрация пользователя</h1>
+        <p class="mt-3">Создайте учётную запись для работы с электронным журналом куратора. Данные сохраняются в таблицу пользователей MySQL.</p>
+        <div class="row g-3 mt-4">
+          <div class="col-6"><div class="p-3 rounded-4" style="background:rgba(255,255,255,.12)"><b>Куратор</b><br><span class="text-white-50">может вносить данные</span></div></div>
+          <div class="col-6"><div class="p-3 rounded-4" style="background:rgba(255,255,255,.12)"><b>Просмотр</b><br><span class="text-white-50">только чтение</span></div></div>
+        </div>
+      </div>
+      <div class="login-form">
+        <h2 class="h4 mb-1">Создать аккаунт</h2>
+        <p class="text-muted mb-4">Поля со звёздочкой обязательны для заполнения.</p>
+
+        <% if (error) { %><div class="alert alert-danger"><%= error %></div><% } %>
+        <% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+
+        <form method="post" action="/register">
+          <div class="mb-3">
+            <label class="form-label">ФИО пользователя *</label>
+            <input class="form-control" name="full_name" value="<%= form.full_name || '' %>" required minlength="5" maxlength="150" pattern="[^0-9]+" title="ФИО не должно содержать цифры" placeholder="Например: Иванов Иван Иванович">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Логин *</label>
+            <input class="form-control" name="username" value="<%= form.username || '' %>" autocomplete="username" required minlength="3" maxlength="50" placeholder="Например: ivanov">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Роль *</label>
+            <select class="form-select" name="role_id" required>
+              <option value="">Выберите роль</option>
+              <% roles.forEach(role => { %>
+                <option value="<%= role.id %>" <%= String(form.role_id || '') === String(role.id) ? 'selected' : '' %>><%= role.title %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Пароль *</label>
+            <input class="form-control" type="password" name="password" autocomplete="new-password" required minlength="6" placeholder="Минимум 6 символов">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Повторите пароль *</label>
+            <input class="form-control" type="password" name="password_repeat" autocomplete="new-password" required minlength="6" placeholder="Введите пароль ещё раз">
+          </div>
+          <button class="btn btn-primary w-100">Зарегистрироваться</button>
+        </form>
+
+        <div class="small text-muted mt-4">
+          Уже есть аккаунт? <a href="/login">Войти в систему</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>

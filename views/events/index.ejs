@@ -1,0 +1,7 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1">Мероприятия</h1><div class="page-subtitle">План, место проведения, ответственный и участники.</div></div><% if (user.role !== 'viewer') { %><a class="btn btn-primary" href="/events/create">Добавить</a><% } %></div>
+<div class="card"><div class="card-body p-0"><table class="table table-hover mb-0"><thead><tr><th>Название</th><th>Дата</th><th>Тип</th><th>Место</th><th>Ответственный</th></tr></thead><tbody>
+<% events.forEach(e => { %><tr><td><a href="/events/<%= e.id %>"><%= e.title %></a><div class="small text-muted"><%= e.target_audience || '' %></div></td><td><%= e.event_date.toISOString().slice(0,10) %></td><td><%= e.event_type %></td><td><%= e.event_place || '' %></td><td><%= e.organizer || e.creator || '' %></td></tr><% }) %>
+<% if (!events.length) { %><tr><td colspan="5" class="empty-state">Мероприятия ещё не добавлены</td></tr><% } %>
+</tbody></table></div></div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1"><%= title %></h1><div class="required-hint">Поля со звёздочкой обязательны для заполнения.</div></div></div>
+<div class="card form-card"><div class="card-body">
+<% if (typeof error !== "undefined" && error) { %><div class="alert alert-danger"><%= error %></div><% } %>
+<form method="post">
+  <div class="row g-3">
+    <div class="col-md-8"><label class="form-label">ФИО *</label><input class="form-control" name="full_name" value="<%= student.full_name || '' %>" required minlength="8" pattern="[^0-9]+" title="ФИО не должно содержать цифры"></div>
+    <div class="col-md-4"><label class="form-label">Группа *</label><select class="form-select" name="group_id" required><option value="">Выберите группу</option><% groups.forEach(g => { %><option value="<%= g.id %>" <%= student.group_id==g.id?'selected':'' %>><%= g.group_name %></option><% }) %></select></div>
+    <div class="col-md-4"><label class="form-label">Дата рождения *</label><input class="form-control" type="date" name="birth_date" value="<%= student.birth_date ? (student.birth_date.toISOString ? student.birth_date.toISOString().slice(0,10) : student.birth_date) : '' %>" required></div>
+    <div class="col-md-4"><label class="form-label">Телефон *</label><input class="form-control" type="tel" name="phone" value="<%= student.phone || '' %>" required minlength="10" placeholder="+7 900 000-00-00"></div>
+    <div class="col-md-4"><label class="form-label">Email *</label><input class="form-control" type="email" name="email" value="<%= student.email || '' %>" required placeholder="student@example.com"></div>
+    <div class="col-md-8"><label class="form-label">Адрес проживания *</label><input class="form-control" name="address" value="<%= student.address || '' %>" required minlength="5"></div>
+    <div class="col-md-4"><label class="form-label">Статус *</label><select class="form-select" name="status" required><option value="active" <%= student.status==='active'?'selected':'' %>>Активно обучается</option><option value="academic_leave" <%= student.status==='academic_leave'?'selected':'' %>>Академический отпуск</option><option value="expelled" <%= student.status==='expelled'?'selected':'' %>>Отчислен</option><option value="graduated" <%= student.status==='graduated'?'selected':'' %>>Выпускник</option></select></div>
+    <div class="col-12"><label class="form-label">Примечание куратора</label><textarea class="form-control" name="notes" placeholder="Особенности обучения, активности, замечания"><%= student.notes || '' %></textarea></div>
+  </div>
+  <div class="mt-4 d-flex gap-2"><button class="btn btn-primary">Сохранить</button><a class="btn btn-secondary" href="/students">Назад</a></div>
+</form>
+</div></div>
+<%- include('../partials/footer') %>

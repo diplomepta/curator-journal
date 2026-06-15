@@ -1,0 +1,13 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1">Пользователи</h1><div class="page-subtitle">Управление учётными записями и ролями доступа.</div></div></div>
+<div class="card mb-4"><div class="card-body"><form method="post" class="row g-3">
+  <div class="col-md-3"><label class="form-label">Логин *</label><input class="form-control" name="username" required minlength="3"></div>
+  <div class="col-md-3"><label class="form-label">Пароль *</label><input class="form-control" type="password" name="password" required minlength="6"></div>
+  <div class="col-md-4"><label class="form-label">ФИО *</label><input class="form-control" name="full_name" required minlength="8" pattern="[^0-9]+" title="ФИО не должно содержать цифры"></div>
+  <div class="col-md-2"><label class="form-label">Роль *</label><select class="form-select" name="role_id" required><% roles.forEach(r => { %><option value="<%= r.id %>"><%= r.title %></option><% }) %></select></div>
+  <div class="col-12"><button class="btn btn-primary">Добавить пользователя</button></div>
+</form></div></div>
+<div class="card"><div class="card-body p-0"><table class="table mb-0"><thead><tr><th>ФИО</th><th>Логин</th><th>Роль</th><th>Дата создания</th></tr></thead><tbody>
+<% users.forEach(u => { %><tr><td><%= u.full_name %></td><td><%= u.username %></td><td><span class="badge-soft"><%= u.role_title %></span></td><td><%= u.created_at.toISOString().slice(0,10) %></td></tr><% }) %>
+</tbody></table></div></div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1">Посещаемость</h1><div class="page-subtitle">Выберите группу, дисциплину и дату занятия.</div></div></div>
+<form class="card mb-4"><div class="card-body"><div class="row g-3">
+  <div class="col-md-4"><label class="form-label">Группа *</label><select class="form-select" name="group_id" required><option value="">Выберите</option><% groups.forEach(g => { %><option value="<%= g.id %>" <%= group_id==g.id?'selected':'' %>><%= g.group_name %></option><% }) %></select></div>
+  <div class="col-md-4"><label class="form-label">Дисциплина *</label><select class="form-select" name="subject_id" required><option value="">Выберите</option><% subjects.forEach(s => { %><option value="<%= s.id %>" <%= subject_id==s.id?'selected':'' %>><%= s.name %></option><% }) %></select></div>
+  <div class="col-md-3"><label class="form-label">Дата *</label><input class="form-control" type="date" name="lesson_date" value="<%= lesson_date %>" required></div>
+  <div class="col-md-1 d-flex align-items-end"><button class="btn btn-primary w-100">ОК</button></div>
+</div></div></form>
+<% if (students.length) { %>
+<form method="post" action="/attendance" class="card"><div class="card-body p-0">
+  <input type="hidden" name="group_id" value="<%= group_id %>">
+  <input type="hidden" name="subject_id" value="<%= subject_id %>">
+  <input type="hidden" name="lesson_date" value="<%= lesson_date %>">
+  <table class="table mb-0"><thead><tr><th>Студент</th><th>Статус *</th><th>Комментарий</th></tr></thead><tbody>
+  <% students.forEach(s => { const item = map[s.id] || {}; %>
+    <tr>
+      <td><input type="hidden" name="student_ids" value="<%= s.id %>"><b><%= s.full_name %></b></td>
+      <td><select class="form-select" name="status_<%= s.id %>" required><option value="present" <%= item.status==='present'?'selected':'' %>>Присутствовал</option><option value="valid_absent" <%= item.status==='valid_absent'?'selected':'' %>>Уважительная причина</option><option value="absent" <%= item.status==='absent'?'selected':'' %>>Отсутствовал</option><option value="late" <%= item.status==='late'?'selected':'' %>>Опоздал</option></select></td>
+      <td><input class="form-control" name="comment_<%= s.id %>" value="<%= item.comment || '' %>" placeholder="Причина или примечание"></td>
+    </tr>
+  <% }) %>
+  </tbody></table>
+  <% if (user.role !== 'viewer') { %><div class="p-3"><button class="btn btn-primary">Сохранить ведомость</button></div><% } %>
+</div></form>
+<% } %>
+<%- include('../partials/footer') %>

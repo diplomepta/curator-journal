@@ -1,0 +1,73 @@
+<%- include('partials/header') %>
+<div class="card hero-card mb-4">
+  <div class="card-body p-4 p-lg-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <div class="text-muted fw-semibold mb-2">Панель куратора</div>
+        <h1 class="display-6 fw-bold mb-2">Контроль группы без лишних таблиц и хаоса</h1>
+        <p class="mb-0 text-muted">На главной собраны студенты, пропуски, задолженности, мероприятия и последние действия в системе.</p>
+      </div>
+      <div class="col-lg-4">
+        <div class="hero-actions justify-content-lg-end">
+          <a class="btn btn-light" href="/students/create">Добавить студента</a>
+          <a class="btn btn-outline-light" href="/reports">Открыть отчёты</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="card stat"><div class="card-body"><div class="stat-label">Активные студенты</div><strong><%= stats.students %></strong></div></div></div>
+  <div class="col-md-3"><div class="card stat"><div class="card-body"><div class="stat-label">Пропуски и опоздания</div><strong><%= stats.absent %></strong></div></div></div>
+  <div class="col-md-3"><div class="card stat"><div class="card-body"><div class="stat-label">Задолженности</div><strong><%= stats.badGrades %></strong></div></div></div>
+  <div class="col-md-3"><div class="card stat"><div class="card-body"><div class="stat-label">Ближайшие мероприятия</div><strong><%= stats.events %></strong></div></div></div>
+</div>
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header">Последние добавленные студенты</div>
+      <div class="card-body p-0">
+        <table class="table mb-0"><tbody>
+          <% recentStudents.forEach(s => { %><tr><td><a href="/students/<%= s.id %>"><%= s.full_name %></a></td><td><span class="badge-soft"><%= s.group_name %></span></td></tr><% }) %>
+          <% if (!recentStudents.length) { %><tr><td colspan="2" class="empty-state">Студентов пока нет</td></tr><% } %>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header">Ближайшие мероприятия</div>
+      <div class="card-body p-0">
+        <table class="table mb-0"><tbody>
+          <% events.forEach(e => { %><tr><td><a href="/events/<%= e.id %>"><%= e.title %></a><div class="small text-muted"><%= e.event_place || 'Место не указано' %></div></td><td><%= e.event_date ? e.event_date.toISOString().slice(0,10) : '' %></td></tr><% }) %>
+          <% if (!events.length) { %><tr><td colspan="2" class="empty-state">Ближайших мероприятий нет</td></tr><% } %>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="<%= user.role === 'admin' ? 'col-lg-5' : 'col-lg-12' %>">
+    <div class="card h-100">
+      <div class="card-header">Студенты группы риска</div>
+      <div class="card-body p-0">
+        <table class="table mb-0"><tbody>
+          <% riskStudents.forEach(s => { %><tr><td><a href="/students/<%= s.id %>"><%= s.full_name %></a><div class="small text-muted"><%= s.group_name %></div></td><td><span class="badge badge-status-danger"><%= s.bad_count %> проблем.</span></td></tr><% }) %>
+          <% if (!riskStudents.length) { %><tr><td colspan="2" class="empty-state">Критичных задолженностей нет</td></tr><% } %>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+  <% if (user.role === 'admin') { %>
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header">Последние действия</div>
+      <div class="card-body">
+        <% activity.forEach(a => { %>
+          <div class="timeline-item"><b><%= a.action %></b><div class="small text-muted"><%= a.full_name || 'Система' %> · <%= a.created_at.toISOString().slice(0,16).replace('T',' ') %></div></div>
+        <% }) %>
+        <% if (!activity.length) { %><div class="empty-state">История действий пока пустая</div><% } %>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>
+<%- include('partials/footer') %>

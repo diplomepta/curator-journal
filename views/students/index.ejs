@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+<div class="page-title">
+  <div><h1 class="h3 mb-1">Студенты</h1><div class="page-subtitle">Поиск, фильтрация и быстрый переход в карточку студента.</div></div>
+  <% if (user.role !== 'viewer') { %><a class="btn btn-primary" href="/students/create">Добавить студента</a><% } %>
+</div>
+<form class="card mb-4"><div class="card-body"><div class="row g-3">
+  <div class="col-md-5"><label class="form-label">Поиск по ФИО</label><input class="form-control" name="search" value="<%= search %>" placeholder="Например: Иванов"></div>
+  <div class="col-md-3"><label class="form-label">Группа</label><select class="form-select" name="group_id"><option value="">Все группы</option><% groups.forEach(g => { %><option value="<%= g.id %>" <%= group_id==g.id?'selected':'' %>><%= g.group_name %></option><% }) %></select></div>
+  <div class="col-md-2"><label class="form-label">Статус</label><select class="form-select" name="status"><option value="">Все</option><option value="active" <%= status==='active'?'selected':'' %>>Активен</option><option value="academic_leave" <%= status==='academic_leave'?'selected':'' %>>Академ.</option><option value="expelled" <%= status==='expelled'?'selected':'' %>>Отчислен</option><option value="graduated" <%= status==='graduated'?'selected':'' %>>Выпускник</option></select></div>
+  <div class="col-md-2 d-flex align-items-end"><button class="btn btn-primary w-100">Найти</button></div>
+</div></div></form>
+<div class="card"><div class="card-body p-0">
+<table class="table table-hover mb-0">
+  <thead><tr><th>ФИО</th><th>Группа</th><th>Телефон</th><th>Email</th><th>Статус</th><th></th></tr></thead>
+  <tbody>
+    <% students.forEach(s => { %>
+      <tr>
+        <td><a href="/students/<%= s.id %>"><%= s.full_name %></a></td>
+        <td><span class="badge-soft"><%= s.group_name %></span></td>
+        <td><%= s.phone || '' %></td>
+        <td><%= s.email || '' %></td>
+        <td><span class="badge <%= s.status === 'active' ? 'badge-status-active' : 'badge-soft' %>"><%= statusLabel(s.status) %></span></td>
+        <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="/students/<%= s.id %>/edit">Изменить</a></td>
+      </tr>
+    <% }) %>
+    <% if (!students.length) { %><tr><td colspan="6" class="empty-state">По выбранным условиям студентов нет</td></tr><% } %>
+  </tbody>
+</table>
+</div></div>
+<%- include('../partials/footer') %>

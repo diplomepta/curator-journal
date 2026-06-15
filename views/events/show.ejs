@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1"><%= event.title %></h1><div class="page-subtitle"><%= event.event_type %> · <%= event.event_date.toISOString().slice(0,10) %></div></div></div>
+<div class="row g-4">
+  <div class="col-lg-6"><div class="card h-100"><div class="card-header">Информация</div><div class="card-body">
+    <div class="info-line"><b>Дата</b><span><%= event.event_date.toISOString().slice(0,10) %></span></div>
+    <div class="info-line"><b>Тип</b><span><%= event.event_type %></span></div>
+    <div class="info-line"><b>Место</b><span><%= event.event_place || '' %></span></div>
+    <div class="info-line"><b>Ответственный</b><span><%= event.organizer || '' %></span></div>
+    <div class="info-line"><b>Аудитория</b><span><%= event.target_audience || '' %></span></div>
+    <div class="mt-3"><b>Описание</b><p class="text-muted"><%= event.description || '' %></p></div>
+    <div><b>Результат</b><p class="text-muted mb-0"><%= event.result || 'Результат пока не указан' %></p></div>
+  </div></div></div>
+  <div class="col-lg-6"><div class="card h-100"><div class="card-header">Участники</div><div class="card-body">
+    <% participants.forEach(p => { %><div class="d-flex justify-content-between align-items-center border-bottom py-2"><div><b><%= p.full_name %></b><br><span class="text-muted"><%= participationLabel(p.participation_status) %></span></div><% if (user.role !== 'viewer') { %><form method="post" action="/events/<%= event.id %>/participants/<%= p.id %>/delete"><button class="btn btn-sm btn-outline-danger">Удалить</button></form><% } %></div><% }) %>
+    <% if (!participants.length) { %><div class="empty-state">Участников пока нет</div><% } %>
+    <% if (user.role !== 'viewer') { %><form method="post" action="/events/<%= event.id %>/participants" class="row g-2 mt-3"><div class="col-md-7"><select class="form-select" name="student_id" required><option value="">Выберите студента</option><% students.forEach(s => { %><option value="<%= s.id %>"><%= s.full_name %></option><% }) %></select></div><div class="col-md-3"><select class="form-select" name="participation_status" required><option value="active">Участвует</option><option value="visited">Посетил</option><option value="missed">Пропустил</option></select></div><div class="col-md-2"><button class="btn btn-primary w-100">ОК</button></div></form><% } %>
+  </div></div></div>
+</div>
+<%- include('../partials/footer') %>

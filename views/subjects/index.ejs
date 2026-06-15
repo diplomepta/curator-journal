@@ -1,0 +1,15 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1">Дисциплины</h1><div class="page-subtitle">Учебные дисциплины по группам и закреплённые преподаватели.</div></div></div>
+<% if (user.role !== 'viewer') { %>
+<div class="card mb-4"><div class="card-body"><form method="post" class="row g-3">
+  <div class="col-md-4"><label class="form-label">Группа *</label><select class="form-select" name="group_id" required><option value="">Выберите</option><% groups.forEach(g => { %><option value="<%= g.id %>"><%= g.group_name %></option><% }) %></select></div>
+  <div class="col-md-4"><label class="form-label">Название *</label><input class="form-control" name="name" required minlength="3"></div>
+  <div class="col-md-3"><label class="form-label">Преподаватель *</label><input class="form-control" name="teacher_name" required minlength="5"></div>
+  <div class="col-md-1 d-flex align-items-end"><button class="btn btn-primary w-100">+</button></div>
+</form></div></div>
+<% } %>
+<div class="card"><div class="card-body p-0"><table class="table mb-0"><thead><tr><th>Группа</th><th>Дисциплина</th><th>Преподаватель</th></tr></thead><tbody>
+<% subjects.forEach(s => { %><tr><td><span class="badge-soft"><%= s.group_name %></span></td><td><%= s.name %></td><td><%= s.teacher_name || '' %></td></tr><% }) %>
+<% if (!subjects.length) { %><tr><td colspan="3" class="empty-state">Дисциплины ещё не добавлены</td></tr><% } %>
+</tbody></table></div></div>
+<%- include('../partials/footer') %>

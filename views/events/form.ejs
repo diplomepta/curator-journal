@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<div class="page-title"><div><h1 class="h3 mb-1"><%= title %></h1><div class="required-hint">Добавлены обязательные поля: место, ответственный и аудитория.</div></div></div>
+<div class="card form-card"><div class="card-body"><form method="post">
+  <div class="mb-3"><label class="form-label">Название *</label><input class="form-control" name="title" required minlength="5" placeholder="Например: Родительское собрание"></div>
+  <div class="row g-3">
+    <div class="col-md-4"><label class="form-label">Дата *</label><input class="form-control" type="date" name="event_date" required></div>
+    <div class="col-md-4"><label class="form-label">Тип *</label><input class="form-control" name="event_type" required placeholder="классный час, собрание"></div>
+    <div class="col-md-4"><label class="form-label">Место проведения *</label><input class="form-control" name="event_place" required placeholder="каб. 204, актовый зал"></div>
+    <div class="col-md-6"><label class="form-label">Ответственный *</label><input class="form-control" name="organizer" required placeholder="ФИО ответственного"></div>
+    <div class="col-md-6"><label class="form-label">Целевая аудитория *</label><input class="form-control" name="target_audience" required placeholder="группа, родители, актив"></div>
+  </div>
+  <div class="mb-3 mt-3"><label class="form-label">Описание *</label><textarea class="form-control" name="description" required minlength="10"></textarea></div>
+  <div class="mb-3"><label class="form-label">Результат / итог</label><textarea class="form-control" name="result" placeholder="Можно заполнить после проведения"></textarea></div>
+  <button class="btn btn-primary">Сохранить</button>
+</form></div></div>
+<%- include('../partials/footer') %>

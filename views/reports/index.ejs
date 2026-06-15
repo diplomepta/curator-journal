@@ -1,0 +1,42 @@
+<%- include('../partials/header') %>
+<div class="page-title">
+  <div>
+    <h1 class="h3 mb-1">Отчёты</h1>
+    <div class="page-subtitle">Сводки по студентам, посещаемости, успеваемости и мероприятиям.</div>
+  </div>
+  <div class="action-row">
+    <a class="btn btn-outline-primary" href="/reports/students.xlsx">Excel студенты</a>
+    <a class="btn btn-outline-primary" href="/reports/attendance.xlsx">Excel посещаемость</a>
+    <a class="btn btn-outline-primary" href="/reports/grades.xlsx">Excel оценки</a>
+    <a class="btn btn-primary" href="/reports/events.xlsx">Excel мероприятия</a>
+  </div>
+</div>
+
+<% if (importMessage) { %><div class="alert alert-success"><%= importMessage %></div><% } %>
+<% if (importError) { %><div class="alert alert-danger"><%= importError %></div><% } %>
+
+<% if (user.role !== 'viewer') { %>
+<div class="card mb-4">
+  <div class="card-header">Импорт студентов из Excel</div>
+  <div class="card-body">
+    <form method="post" action="/reports/import-students" enctype="multipart/form-data" class="row g-3 align-items-end">
+      <div class="col-lg-6">
+        <label class="form-label">Файл .xlsx *</label>
+        <input class="form-control" type="file" name="excel_file" accept=".xlsx,.xls,.csv" required>
+        <div class="form-text">Колонки: ФИО, Группа, Дата рождения, Телефон, Email, Адрес, Статус, Примечание.</div>
+      </div>
+      <div class="col-lg-3"><button class="btn btn-primary w-100">Импортировать</button></div>
+      <div class="col-lg-3"><a class="btn btn-secondary w-100" href="/reports/students-template.xlsx">Скачать шаблон</a></div>
+    </form>
+  </div>
+</div>
+<% } %>
+
+<div class="row g-4">
+  <div class="col-lg-6"><div class="card"><div class="card-header">Состав групп</div><div class="card-body p-0"><table class="table mb-0"><thead><tr><th>Группа</th><th>Студентов</th></tr></thead><tbody><% groupStats.forEach(r => { %><tr><td><%= r.group_name %></td><td><b><%= r.students %></b></td></tr><% }) %></tbody></table></div></div></div>
+  <div class="col-lg-6"><div class="card"><div class="card-header">Студенты группы риска</div><div class="card-body p-0"><table class="table mb-0"><thead><tr><th>Студент</th><th>Проблемных оценок</th></tr></thead><tbody><% riskStudents.forEach(r => { %><tr><td><%= r.full_name %></td><td><span class="badge badge-status-danger"><%= r.bad_count %></span></td></tr><% }) %><% if (!riskStudents.length) { %><tr><td colspan="2" class="empty-state">Группа риска пуста</td></tr><% } %></tbody></table></div></div></div>
+  <div class="col-lg-8"><div class="card"><div class="card-header">Посещаемость</div><div class="card-body p-0"><table class="table mb-0"><thead><tr><th>Студент</th><th>Пропуски</th><th>Опоздания</th><th>Уважительные</th></tr></thead><tbody><% attendanceStats.forEach(r => { %><tr><td><%= r.full_name %></td><td><%= r.absent || 0 %></td><td><%= r.late || 0 %></td><td><%= r.valid_absent || 0 %></td></tr><% }) %></tbody></table></div></div></div>
+  <div class="col-lg-4"><div class="card"><div class="card-header">Мероприятия по типам</div><div class="card-body p-0"><table class="table mb-0"><thead><tr><th>Тип</th><th>Кол-во</th></tr></thead><tbody><% eventStats.forEach(r => { %><tr><td><%= r.event_type %></td><td><b><%= r.total %></b></td></tr><% }) %></tbody></table></div></div></div>
+  <% if (user.role === 'admin') { %><div class="col-12"><div class="card"><div class="card-header">Журнал действий</div><div class="card-body"><div class="row g-3"><% activity.forEach(a => { %><div class="col-md-6"><div class="timeline-item"><b><%= a.action %></b><div class="small text-muted"><%= a.full_name || 'Система' %> · <%= a.entity_name %> · <%= a.created_at.toISOString().slice(0,16).replace('T',' ') %></div></div></div><% }) %><% if (!activity.length) { %><div class="empty-state">История действий пока пустая</div><% } %></div></div></div></div><% } %>
+</div>
+<%- include('../partials/footer') %>
